@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rails
+  name: rails-service
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: rails-pod
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: rails-ingress
+spec:
+  rules:
+  - host: rails.lvh.me
+    http:
+      paths:
+      - backend:
+          serviceName: rails-service
+          servicePort: 8080

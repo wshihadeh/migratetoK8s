@@ -1,0 +1,42 @@
+version: '3.7'
+
+networks:
+  railsapp:
+    external: false
+
+volumes:
+  db_data:
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    command: mysqld --general-log=1 --general-log-file=/var/log/mysql/general-log.log
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: dummy
+      MYSQL_DATABASE: rails_blog_production
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - railsapp
+
+  rails_blog_web:
+    image: wshihadeh/rails_blog:demo-v1
+    command: 'web'
+    restart: always
+    environment:
+      DATABASE_URL: mysql2://root:dummy@mysql/rails_blog_production
+      RAILS_SERVE_STATIC_FILES: 'true'
+    networks:
+      - railsapp
+
+  nginx:
+    image: wshihadeh/nginx:ebot
+    command: server
+    restart: always
+    hostname: nginx
+    ports:
+      - 80:80
+    networks:
+      - railsapp

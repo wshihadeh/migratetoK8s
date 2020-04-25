@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mysql-db
+  name: mysqldb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb-pod
+  template:
+    metadata:
+      labels:
+        app: mysqldb-pod
+    spec:
+      containers:
+      - name: mysqldb
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: db-data
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: dummy
+        - name: MYSQL_DATABASE
+          value: rails_blog_production
+        ports:
+        - containerPort: 3306
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: db-data-pvc
+      restartPolicy: Always

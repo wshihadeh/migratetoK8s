@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rails
+  name: rails
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rails-pod
+  template:
+    metadata:
+      labels:
+        app: rails-pod
+    spec:
+      containers:
+      - name: rails
+        env:
+        - name: DATABASE_URL
+          value: mysql2://root:dummy@mysqldb-service:3306/rails_blog_production
+        - name: RAILS_SERVE_STATIC_FILES
+          value: 'true'
+        image: wshihadeh/rails_blog:demo-v1
+        args: ['web']
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always

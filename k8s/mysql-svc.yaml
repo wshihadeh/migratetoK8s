@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysql-db
+  name: mysqldb-service
+spec:
+  type: ClusterIP
+  selector:
+      app: mysqldb-pod
+  ports:
+  - port: 3306
+    targetPort: 3306
